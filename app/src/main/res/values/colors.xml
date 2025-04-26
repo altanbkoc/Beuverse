@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Blue-Grey Palette -->
+    <color name="dark_blue">#163249</color>           <!-- Çok koyu mavi-gri -->
+    <color name="medium_blue">#526D82</color>         <!-- Orta koyulukta mavi -->
+    <color name="soft_blue">#9DB2BF</color>           <!-- Açık, yumuşak mavi -->
+    <color name="light_gray_blue">#DDE6ED</color>     <!-- Çok açık gri-mavi -->
+
+    <!-- Contrast Palette -->
+    <color name="off_white">#F9F7F7</color>           <!-- Kırık beyaz -->
+    <color name="light_gray">#DBE2EF</color>          <!-- Açık gri ton -->
+    <color name="strong_blue">#3F72AF</color>         <!-- Belirgin mavi -->
+    <color name="deep_blue">#112D4E</color>           <!-- Çok koyu lacivert -->
+</resources>

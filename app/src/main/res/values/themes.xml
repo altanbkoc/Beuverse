@@ -1,0 +1,29 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SocialMedia" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Ana renkler -->
+        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="colorOnPrimary">@color/off_white</item>
+
+        <item name="colorSecondary">@color/strong_blue</item>
+        <item name="colorOnSecondary">@color/off_white</item>
+
+        <item name="colorTertiary">@color/soft_blue</item>
+        <item name="colorOnTertiary">@color/dark_blue</item>
+
+
+        <item name="android:windowBackground">@color/off_white</item>
+        <item name="colorOnBackground">@color/dark_blue</item>
+
+        <item name="colorSecondaryContainer">@color/soft_blue</item>
+
+        <item name="colorSurface">@color/off_white</item>
+        <item name="colorOnSurface">@color/dark_blue</item>
+
+        <item name="colorError">#B00020</item>
+        <item name="colorOnError">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.SocialMedia" parent="Base.Theme.SocialMedia" />
+</resources>
