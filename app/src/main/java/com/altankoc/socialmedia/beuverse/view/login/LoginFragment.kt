@@ -6,15 +6,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.altankoc.socialmedia.R
+import com.altankoc.socialmedia.beuverse.repository.UserRepository
 import com.altankoc.socialmedia.beuverse.view.user.UserActivity
+import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
+import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.FragmentLoginBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var userViewModel: UserViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +43,39 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val intent = Intent(requireContext(), UserActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
+        val userRepository = UserRepository()
+        val factory = UserViewModelFactory(userRepository)
+        userViewModel = ViewModelProvider(this,factory).get(UserViewModel::class.java)
+
+        binding.buttonGiris.setOnClickListener {
+
+            val email = binding.editTextGirisMail.text.toString()
+            val password = binding.editTextGirisPw.text.toString()
+
+
+            userViewModel.loginUser(email,password) { result ->
+                if (result == "Giriş başarılı!") {
+                    startActivity(Intent(requireContext(), UserActivity::class.java))
+                    requireActivity().finish()
+                } else {
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
+                }
+            }
+
+        }
+
+
+        binding.button.setOnClickListener {
+            val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+            Navigation.findNavController(requireView()).navigate(action)
+        }
     }
 
 

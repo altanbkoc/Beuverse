@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id ("androidx.navigation.safeargs.kotlin")
+    id ("kotlin-kapt")
+    id("com.google.gms.google-services")
 
 }
 
@@ -57,6 +59,14 @@ dependencies {
 
     //Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
 
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "520036626718",
+    "project_id": "beuverse-8e851",
+    "storage_bucket": "beuverse-8e851.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520036626718:android:1f49f993b1f7806c1e190f",
+        "android_client_info": {
+          "package_name": "com.altankoc.socialmedia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTFJyI-rURw8g1XbOSumbBure52GjfoFA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
