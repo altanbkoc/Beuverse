@@ -72,7 +72,7 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.button.setOnClickListener {
+        binding.textViewOrLoginWith.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             Navigation.findNavController(requireView()).navigate(action)
         }
