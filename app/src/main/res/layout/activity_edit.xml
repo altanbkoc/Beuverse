@@ -8,48 +8,130 @@
     android:background="@drawable/navbar_background"
     tools:context=".beuverse.view.user.EditActivity">
 
-    <EditText
-        android:id="@+id/yourEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="342dp"
-        android:background="@android:drawable/edit_text"
-        android:clickable="false"
-        android:enabled="false"
-        android:focusable="false"
-        android:text="Bu alan düzenlenemez"
-        android:textColor="#FF888888"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="191dp"
-        android:background="@drawable/ic_launcher_background"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/yourEditText"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewProfilePic"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="80dp"
+        android:backgroundTint="#00662929"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/imageViewProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Profil Fotoğrafı"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_pp" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/editTextContainer"
+        android:layout_width="415dp"
+        android:layout_height="335dp"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewProfilePic">
+
+        <EditText
+            android:id="@+id/profilEditTextMail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@null"
+            android:clickable="false"
+            android:enabled="false"
+            android:focusable="false"
+            android:hint="E-posta Adresi"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColorHint="@color/dark_blue" />
+
+        <EditText
+            android:id="@+id/profilEditTextNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@null"
+            android:clickable="false"
+            android:enabled="false"
+            android:focusable="false"
+            android:hint="Kullanıcı Adı"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColorHint="@color/dark_blue" />
+
+        <EditText
+            android:id="@+id/profilEditTextAdSoyad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="Ad Soyad"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColor="#FF000000"
+            android:textColorHint="#222729" />
+
+        <EditText
+            android:id="@+id/profilEditTextBolum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="Bölüm"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColor="#FF000000"
+            android:textColorHint="#222729" />
+
+        <EditText
+            android:id="@+id/profilEditTextAboutMe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Hakkımda"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColor="#FF000000"
+            android:textColorHint="#222729" />
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="97dp"
-        android:layout_marginBottom="124dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/yourEditText"
+    <Button
+        android:id="@+id/profilKaydet_SaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Kaydet"
+        android:textAllCaps="false"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextContainer" />
 
+    <ImageButton
+        android:id="@+id/profilClose_İmageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#00432D2D"
+        android:contentDescription="close"
+        android:padding="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_close_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

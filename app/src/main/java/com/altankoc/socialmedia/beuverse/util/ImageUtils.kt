@@ -1,4 +1,4 @@
-package com.altankoc.eseruygulamasi.util
+package com.altankoc.socialmedia.beuverse.util
 
 import android.Manifest
 import android.app.Activity

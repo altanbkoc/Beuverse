@@ -15,6 +15,7 @@ import com.altankoc.socialmedia.beuverse.view.login.LoginActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.FragmentProfileBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 
@@ -59,6 +60,18 @@ class ProfileFragment : Fragment() {
                     binding.textViewBolum.text = user.department
                     binding.textViewAbout.text = user.aboutMe
                     binding.loadingOverlay.visibility = View.GONE
+
+                    // Profil resmi varsa, Glide ile yükle
+                    val profileImageUrl = user.profileImage
+                    if (profileImageUrl.isNotEmpty()) {
+                        Glide.with(this)
+                            .load(profileImageUrl)
+                            .placeholder(R.drawable.default_pp)
+                            .error(R.drawable.default_pp)
+                            .into(binding.imageViewProfile) // imageViewProfile, profil resmini gösterecek olan ImageView
+                    } else {
+                        binding.imageViewProfile.setImageResource(R.drawable.default_pp) // Varsayılan profil resmi
+                    }
 
                 } else {
                     Toast.makeText(requireContext(), "Kullanıcı bilgileri alınamadı", Toast.LENGTH_SHORT).show()

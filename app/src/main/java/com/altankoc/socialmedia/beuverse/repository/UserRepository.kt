@@ -66,6 +66,41 @@ class UserRepository {
         }
     }
 
+    // Kullanıcı bilgilerini güncelleme fonksiyonu
+    suspend fun updateUserProfile(
+        uid: String,
+        username: String,
+        nickname: String,
+        department: String,
+        aboutMe: String,
+        profileImage: String?
+    ): String {
+        return try {
+            val user = User(
+                uid = uid,
+                email = "", // E-posta güncellenmez, mevcut kullanıcıdan alınabilir
+                username = username,
+                nickname = nickname,
+                department = department,
+                aboutMe = aboutMe,
+                profileImage = profileImage ?: ""
+            )
+
+            // Kullanıcı verilerini güncelle
+            firestore.collection("users").document(uid).update(
+                "username", user.username,
+                "nickname", user.nickname,
+                "department", user.department,
+                "aboutMe", user.aboutMe,
+                "profileImage", user.profileImage
+            ).await()
+
+            "Profil güncelleme başarılı!"
+        } catch (e: Exception) {
+            e.message ?: "Profil güncellenirken hata oluştu!"
+        }
+    }
+
 
     fun logoutUser() {
         auth.signOut()

@@ -43,6 +43,22 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
+    // Kullanıcıyı güncelleme fonksiyonu
+    fun updateUserProfile(
+        uid: String,
+        username: String,
+        nickname: String,
+        department: String,
+        aboutMe: String,
+        profileImage: String?,
+        callback: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = userRepository.updateUserProfile(uid, username, nickname, department, aboutMe, profileImage)
+            callback(result)
+        }
+    }
+
     fun logoutUser() {
         userRepository.logoutUser()
     }
