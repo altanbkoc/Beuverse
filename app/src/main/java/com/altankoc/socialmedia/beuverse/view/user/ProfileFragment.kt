@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.altankoc.socialmedia.R
@@ -14,9 +15,8 @@ import com.altankoc.socialmedia.beuverse.view.login.LoginActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.FragmentProfileBinding
-import com.google.firebase.Firebase
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ProfileFragment : Fragment() {
@@ -54,24 +54,60 @@ class ProfileFragment : Fragment() {
         if (currentUser != null) {
             userViewModel.getUserProfile(currentUser.uid) { user ->
                 if (user != null) {
-                    binding.textmail.text = user.email
-                    binding.textAd.text = user.username
-                    binding.textNickname.text = user.nickname
-                    binding.textBolum.text = user.department
+                    binding.textViewName.text = user.username
+                    binding.textViewNickname.text = "@"+user.nickname
+                    binding.textViewBolum.text = user.department
+                    binding.textViewAbout.text = user.aboutMe
+                    binding.loadingOverlay.visibility = View.GONE
+
                 } else {
                     Toast.makeText(requireContext(), "Kullanıcı bilgileri alınamadı", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        binding.buttonCikisYap.setOnClickListener {
-            userViewModel.logoutUser()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+
+
+
+
+        binding.floatingActionButton.setOnClickListener {
+            val popup = PopupMenu(requireContext(), binding.floatingActionButton)
+            popup.menuInflater.inflate(R.menu.profile_menu, popup.menu)
+
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_edit_profile -> {
+                        // Profili düzenleye git
+                        val intent = Intent(requireActivity(), EditActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    R.id.action_logout -> {
+                        // Oturumu kapat
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Çıkış")
+                            .setIcon(R.drawable.baseline_power_settings_new_24)
+                            .setMessage("Çıkış yapmak istediğinize emin misiniz?")
+                            .setPositiveButton("Evet") { _, _ ->
+                            binding.loadingOverlay.visibility = View.VISIBLE
+                                binding.root.postDelayed({
+                                    userViewModel.logoutUser()
+                                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                                    startActivity(intent)
+                                    requireActivity().finish()
+                                },1500)
+                            }
+                            .setNegativeButton("Hayır", null)
+                            .show()
+
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            popup.show()
         }
-
-
 
 
 
