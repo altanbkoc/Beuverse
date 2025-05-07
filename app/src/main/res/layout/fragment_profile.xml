@@ -8,6 +8,7 @@
     tools:context=".beuverse.view.user.ProfileFragment">
 
 
+
     <View
         android:id="@+id/viewWavyBackground"
         android:layout_width="518dp"
