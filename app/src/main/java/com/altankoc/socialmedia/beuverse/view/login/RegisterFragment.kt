@@ -15,6 +15,8 @@ import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.FragmentLoginBinding
 import com.altankoc.socialmedia.databinding.FragmentRegisterBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class RegisterFragment : Fragment() {
@@ -46,16 +48,18 @@ class RegisterFragment : Fragment() {
         userViewModel = ViewModelProvider(this,factory).get(UserViewModel::class.java)
 
         binding.buttonKayit.setOnClickListener {
-//            val email = binding.editTextEmail.text.toString()
-//            val password = binding.editTextPw.text.toString()
-//            val username = binding.editTextUsername.text.toString()
-//            val nickname = binding.editTextNickname.text.toString()
-//            val department = binding.editTextBolum.text.toString()
-//            userViewModel.registerUser(email, password, username, nickname, department) { result ->
-//
-//                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
-//
-//            }
+            val email = binding.editTextEmail.text.toString()
+            val password = binding.editTextPw.text.toString()
+            val username = binding.editTextUsername.text.toString()
+            val nickname = binding.editTextNickname.text.toString()
+            val department = binding.editTextBolum.text.toString()
+
+
+            userViewModel.registerUser(email, password, username, nickname, department) { result ->
+
+                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+
+            }
 
             val intent = Intent(requireActivity(), UserActivity::class.java)
             startActivity(intent)

@@ -24,6 +24,9 @@
         <item name="colorError">#B00020</item>
         <item name="colorOnError">#FFFFFF</item>
     </style>
+    <style name="ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item> </style>
 
     <style name="Theme.SocialMedia" parent="Base.Theme.SocialMedia" />
 </resources>
