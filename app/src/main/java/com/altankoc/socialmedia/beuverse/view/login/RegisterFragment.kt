@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.repository.UserRepository
+import com.altankoc.socialmedia.beuverse.util.Departments
 import com.altankoc.socialmedia.beuverse.view.user.UserActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
@@ -47,22 +49,39 @@ class RegisterFragment : Fragment() {
         val factory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this,factory).get(UserViewModel::class.java)
 
+
+
+
+        // Adapter oluştur ve AutoCompleteTextView'e ata
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, Departments.departments)
+        binding.autoCompleteBolum.setAdapter(adapter)
+
+
         binding.buttonKayit.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPw.text.toString()
             val username = binding.editTextUsername.text.toString()
             val nickname = binding.editTextNickname.text.toString()
-            val department = binding.editTextBolum.text.toString()
+            val department = binding.autoCompleteBolum.text.toString()
 
 
             userViewModel.registerUser(email, password, username, nickname, department) { result ->
 
-                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+               if(result == "Kayıt başarılı!"){
+                   binding.loadingOverlay.visibility = View.VISIBLE
+                    binding.root.postDelayed({
+                        val intent = Intent(requireActivity(), UserActivity::class.java)
+                        startActivity(intent)
+                    },1000)
+
+               }
+                else{
+                   Toast.makeText(requireContext(),result, Toast.LENGTH_SHORT).show()
+               }
 
             }
 
-            val intent = Intent(requireActivity(), UserActivity::class.java)
-            startActivity(intent)
+
         }
     }
 

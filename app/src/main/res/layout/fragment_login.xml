@@ -47,22 +47,18 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textFieldEmail"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+        android:layout_width="347dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="280dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginTop="32dp"
         android:hint="E-posta"
         app:boxStrokeColor="#27374D"
         app:hintTextColor="#526D82"
-        app:layout_constraintBottom_toTopOf="@+id/textFieldPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewHi"
-        app:layout_constraintVertical_bias="0.0"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded">
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded"
+        app:startIconDrawable="@drawable/baseline_email_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextGirisMail"
@@ -77,21 +73,20 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textFieldPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+        android:layout_width="347dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="24dp"
         android:hint="Şifre"
         app:boxStrokeColor="#27374D"
         app:hintTextColor="#526D82"
-        app:layout_constraintBottom_toTopOf="@+id/buttonGiris"
-        app:layout_constraintEnd_toEndOf="@+id/textFieldEmail"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textFieldEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFieldEmail"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="#526D82"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded">
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded"
+        app:startIconDrawable="@drawable/baseline_lock_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextGirisPw"
@@ -106,19 +101,20 @@
         android:id="@+id/textViewOrLoginWith"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Hesabın yok mu? Kayıt ol."
+        android:layout_marginTop="32dp"
+        android:text="Hesabın yok mu? Kayıt ol"
         android:textColor="#526D82"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonGiris" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonGiris"
-        android:layout_width="0dp"
+        android:layout_width="347dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
+        android:layout_marginTop="32dp"
         android:backgroundTint="#163249"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
@@ -127,19 +123,42 @@
         android:textColor="#DDE6ED"
         android:textSize="18sp"
         app:cornerRadius="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textFieldPassword"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textFieldPassword" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldPassword" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="159dp"
         android:layout_height="160dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/textFieldEmail"
+        android:layout_marginTop="32dp"
+        android:rotationX="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/background_shape_dark"
+        app:srcCompat="@drawable/beuversedaire" />
+
+
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/beuversedaire" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/dark_blue" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

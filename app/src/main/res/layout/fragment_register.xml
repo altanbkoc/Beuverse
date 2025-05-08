@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#DDE6ED"
-    tools:context="MainActivity">
+    tools:context=".beuverse.view.login.LoginActivity">
 
     <View
         android:id="@+id/viewCircleLarge"
@@ -56,6 +56,9 @@
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeColor="#27374D"
+                app:counterEnabled="true"
+                app:counterMaxLength="25"
+                app:endIconMode="clear_text"
                 app:hintTextColor="#526D82">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -63,6 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
+                    android:maxLength="25"
                     android:textColor="#27374D" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,6 +82,9 @@
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeColor="#27374D"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
+                app:endIconMode="clear_text"
                 app:hintTextColor="#526D82">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -85,6 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:maxLength="10"
                     android:textColor="#27374D" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:labelFor="@id/editTextBolum"
+                android:labelFor="@id/autoCompleteBolum"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
@@ -103,7 +111,7 @@
                 app:hintTextColor="#526D82">
 
                 <AutoCompleteTextView
-                    android:id="@+id/editTextBolum"
+                    android:id="@+id/autoCompleteBolum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="aaa"
@@ -128,6 +136,7 @@
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeColor="#27374D"
+                app:endIconMode="clear_text"
                 app:hintTextColor="#526D82">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -150,6 +159,8 @@
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeColor="#27374D"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
                 app:hintTextColor="#526D82"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="#526D82">
@@ -159,6 +170,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:maxLength="10"
                     android:textColor="#27374D" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,11 +183,38 @@
                 android:backgroundTint="#27374D"
                 android:paddingTop="14dp"
                 android:paddingBottom="14dp"
-                android:text="Kayıt Ol"
+                android:text="@string/kayit_ol"
                 android:textColor="#DDE6ED"
                 android:textSize="16sp"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                android:textAllCaps="false"/>
         </LinearLayout>
+
+
+
+
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/dark_blue" />
+    </FrameLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

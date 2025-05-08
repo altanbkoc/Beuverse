@@ -56,7 +56,7 @@ class EditActivity : AppCompatActivity() {
                     binding.profilEditTextAdSoyad.setText(user.username)
                     binding.profilEditTextMail.setText(user.email)
                     binding.profilEditTextAboutMe.setText(user.aboutMe)
-                    binding.profilEditTextBolum.setText(user.department)
+                    binding.profilEditTextDepartment.setText(user.department)
 
 
                     val profileImageUrl = user.profileImage
@@ -98,7 +98,7 @@ class EditActivity : AppCompatActivity() {
         binding.profilKaydetSaveButton.setOnClickListener {
             val newNickname = binding.profilEditTextNickname.text.toString().trim()
             val newUsername = binding.profilEditTextAdSoyad.text.toString().trim()
-            val newDepartment = binding.profilEditTextBolum.text.toString().trim()
+            val newDepartment = binding.profilEditTextDepartment.text.toString().trim()
             val newAboutMe = binding.profilEditTextAboutMe.text.toString().trim()
 
             val profileImage = selectedImageUri?.toString()

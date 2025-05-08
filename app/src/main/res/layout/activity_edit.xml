@@ -73,6 +73,21 @@
             android:textColorHint="@color/dark_blue" />
 
         <EditText
+            android:id="@+id/profilEditTextDepartment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@null"
+            android:clickable="false"
+            android:enabled="false"
+            android:focusable="false"
+            android:hint="Bölüm"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColorHint="@color/dark_blue" />
+
+        <EditText
             android:id="@+id/profilEditTextAdSoyad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,17 +99,7 @@
             android:textColor="#FF000000"
             android:textColorHint="#222729" />
 
-        <EditText
-            android:id="@+id/profilEditTextBolum"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:hint="Bölüm"
-            android:inputType="text"
-            android:minHeight="48dp"
-            android:padding="10dp"
-            android:textColor="#FF000000"
-            android:textColorHint="#222729" />
+
 
         <EditText
             android:id="@+id/profilEditTextAboutMe"
@@ -109,7 +114,7 @@
 
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/profilKaydet_SaveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
