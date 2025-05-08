@@ -9,8 +9,6 @@
     tools:context=".beuverse.view.user.AddFragment">
 
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -85,35 +83,45 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_image_search_24" />
 
-        <EditText
-            android:id="@+id/editTextPaylas"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textCommentInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/add_comment_background"
-            android:ems="10"
-            android:fontFamily="sans-serif-light"
-            android:gravity="start|top"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:hint="Ne düşünüyorsun?"
-            android:inputType="textMultiLine"
-            android:maxLength="100"
-            android:maxLines="3"
-            android:padding="15dp"
-            android:textColor="@color/dark_blue"
-            android:textSize="16sp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="#27374D"
+            app:counterEnabled="true"
+            app:counterMaxLength="300"
+            app:endIconMode="clear_text"
+            app:hintTextColor="#526D82"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewPaylas" />
+            app:layout_constraintTop_toBottomOf="@+id/imageViewPaylas">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPaylas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/add_comment_background"
+                android:inputType="textPersonName"
+                android:maxLength="300"
+                android:textColor="#27374D" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/buttonPaylas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
             android:fontFamily="sans-serif-light"
             android:padding="10dp"
             android:text="Paylas"
@@ -123,11 +131,10 @@
             app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextPaylas" />
+            app:layout_constraintTop_toBottomOf="@+id/textCommentInput" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <FrameLayout
         android:id="@+id/loadingOverlay"
@@ -142,7 +149,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Yarı saydam siyah arka plan ve ortalanmış yükleniyor simgesi -->
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

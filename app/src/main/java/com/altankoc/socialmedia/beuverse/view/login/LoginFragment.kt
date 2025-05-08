@@ -62,8 +62,12 @@ class LoginFragment : Fragment() {
 
             userViewModel.loginUser(email,password) { result ->
                 if (result == "Giriş başarılı!") {
-                    startActivity(Intent(requireContext(), UserActivity::class.java))
-                    requireActivity().finish()
+                    binding.loadingOverlay.visibility = View.VISIBLE
+                    binding.root.postDelayed({
+                        startActivity(Intent(requireContext(), UserActivity::class.java))
+                        requireActivity().finish()
+                    },1000)
+
                 } else {
                     Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
                 }
