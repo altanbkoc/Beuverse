@@ -1,15 +1,40 @@
 package com.altankoc.socialmedia.beuverse.repository
 
+import android.net.Uri
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import com.altankoc.socialmedia.beuverse.model.User
+import com.google.firebase.storage.FirebaseStorage
 
 class UserRepository {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
+
+
+    suspend fun uploadProfileImage(userId: String, imageUri: Uri): String {
+        val storageRef = storage.getReference("profile_images/$userId")
+
+        // 1. Resmi Storage'a yükle
+        storageRef.putFile(imageUri).await()
+
+        // 2. Download URL'yi al
+        return storageRef.downloadUrl.await().toString()
+    }
+
+    suspend fun deleteOldProfileImage(imageUrl: String) {
+        if (imageUrl.isNotEmpty()) {
+            try {
+                storage.getReferenceFromUrl(imageUrl).delete().await()
+            } catch (e: Exception) {
+                Log.e("Repository", "Resim silinemedi: ${e.message}")
+            }
+        }
+    }
 
     suspend fun registerUser(email: String,
                              password: String,
