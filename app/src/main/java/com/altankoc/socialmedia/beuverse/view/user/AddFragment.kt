@@ -4,13 +4,14 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.model.Post
@@ -26,30 +27,42 @@ import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 
 class AddFragment : Fragment() {
+
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
-    private lateinit var permissionLauncher: ActivityResultLauncher<String>
-    private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
+    private val postViewModel: PostViewModel by viewModels()
     private var selectedImageUri: Uri? = null
+    private var isPostInProgress = false
 
-    private lateinit var postViewModel: PostViewModel
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) openGallery() else
+            ImageUtils.showToast(requireContext(), "Depolama izni verilmedi!")
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        firebaseAuth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        val factory = PostViewModelFactory(PostRepository())
-        postViewModel = ViewModelProvider(this, factory)[PostViewModel::class.java]
+    private val galleryLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.data?.let { uri ->
+                selectedImageUri = uri
+                Glide.with(this)
+                    .load(uri)
+                    .into(binding.imageViewPaylas)
+            }
+        }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -57,140 +70,148 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        registerLaunchers()
+        val repo = PostRepository()
+        val factory = PostViewModelFactory(repo)
+        val postViewModel: PostViewModel = ViewModelProvider(this, factory)[PostViewModel::class.java]
 
         binding.imageViewPaylas.setOnClickListener {
-            ImageUtils.checkAndRequestPermission(
-                activity = requireActivity(),
-                view = it,
-                permissionLauncher = permissionLauncher
-            ) {
-                ImageUtils.openGallery(galleryLauncher)
+            if (!isPostInProgress) {
+                ImageUtils.checkAndRequestPermission(
+                    activity = requireActivity(),
+                    view = it,
+                    permissionLauncher = permissionLauncher,
+                    onPermissionGranted = ::openGallery
+                )
             }
         }
 
         binding.buttonPaylas.setOnClickListener {
-                sharePost()
-        }
-
-        observeViewModel()
-    }
-
-    private fun showLoading() {
-        binding.loadingOverlay.visibility = View.VISIBLE
-        binding.loadingOverlay.isClickable = true // Arka plana tıklanmasını engeller
-    }
-
-    private fun hideLoading() {
-        if (_binding != null) { // Null kontrolü ekleyin
-            binding.loadingOverlay.visibility = View.GONE
+            if (!isPostInProgress) {
+                validateAndSharePost()
+            }
         }
     }
 
-    private fun sharePost() {
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        galleryLauncher.launch(intent)
+    }
+
+    private fun validateAndSharePost() {
         val explanation = binding.editTextPaylas.text.toString().trim()
-        val selectedTagId = binding.radioGroup.checkedRadioButtonId
-
-        if (selectedTagId == -1) {
-            ImageUtils.showToast(requireContext(), "Lütfen bir etiket seçin!")
-            return
-        }
+        val selectedTagId = binding.radioGroup.checkedRadioButtonId.takeIf { it != -1 }
+            ?: run {
+                ImageUtils.showToast(requireContext(), "Lütfen bir etiket seçin!")
+                return
+            }
 
         if (explanation.isEmpty() && selectedImageUri == null) {
             ImageUtils.showToast(requireContext(), "En az bir içerik (yazı veya resim) ekleyin!")
             return
         }
 
-        val selectedTag = binding.radioGroup.findViewById<RadioButton>(selectedTagId).text.toString()
-        val currentUser = firebaseAuth.currentUser ?: run {
+        val currentUser = auth.currentUser ?: run {
             ImageUtils.showToast(requireContext(), "Kullanıcı girişi yapılmamış!")
             return
         }
 
+        startPostingProcess(currentUser.uid, explanation, selectedTagId)
+    }
+
+    private fun startPostingProcess(userId: String, explanation: String, selectedTagId: Int) {
+        isPostInProgress = true
         showLoading()
 
-
-        FirebaseFirestore.getInstance().collection("users").document(currentUser.uid).get()
+        firestore.collection("users").document(userId).get()
             .addOnSuccessListener { document ->
-                val post = Post(
-                    postId = UUID.randomUUID().toString(),
-                    userId = currentUser.uid,
-                    userUsername = document.getString("username") ?: "",
-                    userNickname = document.getString("nickname") ?: "",
-                    userProfileImage = document.getString("profileImage") ?: "",
-                    tag = selectedTag,
-                    explanation = explanation,
-                    timestamp = System.currentTimeMillis(),
-                    imageUrl = ""
-                )
+                val post = createPost(document, selectedTagId, explanation)
 
-                if (selectedImageUri != null) {
-                    uploadImageAndPost(post)
-                } else {
-                    postViewModel.addPost(post)
+                selectedImageUri?.let { uri ->
+                    uploadImageAndPost(post, uri)
+                } ?: run {
+                    postViewModel.addPost(post, null)
+                    completePostingProcess()
                 }
+            }
+            .addOnFailureListener { e ->
+                handlePostingFailure("Kullanıcı bilgileri alınamadı: ${e.message}")
             }
     }
 
-    private fun uploadImageAndPost(post: Post) {
-        val storageRef = FirebaseStorage.getInstance().reference
-            .child("posts_images/${UUID.randomUUID()}")
+    private fun uploadImageAndPost(post: Post, imageUri: Uri) {
+        val storageRef = storage.getReference("posts/${post.postId}")
 
-        storageRef.putFile(selectedImageUri!!)
+        storageRef.putFile(imageUri)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                     val updatedPost = post.copy(imageUrl = uri.toString())
-                    postViewModel.addPost(updatedPost)
+                    postViewModel.addPost(updatedPost, null)
+                    completePostingProcess()
                 }
-            }
-            .addOnFailureListener {
-                ImageUtils.showToast(requireContext(), "Resim yüklenemedi!")
-            }
-    }
-
-    private fun observeViewModel() {
-        postViewModel.postStatus.observe(viewLifecycleOwner) { isSuccess ->
-            hideLoading()
-
-            if (isSuccess) {
-                binding.editTextPaylas.text?.clear()
-                binding.radioGroup.clearCheck()
-                binding.imageViewPaylas.setImageResource(R.drawable.baseline_image_search_24)
-                selectedImageUri = null
-            }
-        }
-    }
-
-
-    private fun registerLaunchers() {
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    ImageUtils.openGallery(galleryLauncher)
-                } else {
-                    ImageUtils.showToast(requireContext(), "Galeri erişim izni reddedildi!")
-                }
-            }
-
-        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val intentData = result.data
-                if (intentData != null) {
-                    selectedImageUri = intentData.data
-                    selectedImageUri?.let { uri ->
-                        Glide.with(this)
-                            .load(uri)
-                            .into(binding.imageViewPaylas)
+                    .addOnFailureListener { e ->
+                        handlePostingFailure("Resim URL'si alınamadı: ${e.message}")
                     }
-                }
             }
-        }
+            .addOnFailureListener { e ->
+                handlePostingFailure("Resim yüklenemedi: ${e.message}")
+            }
+    }
+
+    private fun createPost(
+        userDocument: com.google.firebase.firestore.DocumentSnapshot,
+        selectedTagId: Int,
+        explanation: String
+    ): Post {
+        val selectedTag = binding.radioGroup.findViewById<RadioButton>(selectedTagId).text.toString()
+
+        return Post(
+            postId = UUID.randomUUID().toString(),
+            userId = auth.currentUser?.uid ?: "",
+            userUsername = userDocument.getString("username") ?: "",
+            userNickname = userDocument.getString("nickname") ?: "",
+            userProfileImage = userDocument.getString("profileImage") ?: "",
+            tag = selectedTag,
+            explanation = explanation,
+            timestamp = System.currentTimeMillis(),
+            imageUrl = ""
+        )
+    }
+
+    private fun showLoading() {
+        binding.loadingOverlay.visibility = View.VISIBLE
+        binding.buttonPaylas.isEnabled = false
+        binding.imageViewPaylas.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        binding.loadingOverlay.visibility = View.GONE
+        binding.buttonPaylas.isEnabled = true
+        binding.imageViewPaylas.isEnabled = true
+    }
+
+    private fun resetForm() {
+        binding.editTextPaylas.setText("")
+        binding.radioGroup.clearCheck()
+        binding.imageViewPaylas.setImageResource(R.drawable.baseline_image_search_24)
+        selectedImageUri = null
+    }
+
+    private fun completePostingProcess() {
+        resetForm()
+        hideLoading()
+        isPostInProgress = false
+        ImageUtils.showToast(requireContext(), "Paylaşım başarıyla oluşturuldu!")
+    }
+
+    private fun handlePostingFailure(errorMessage: String) {
+        hideLoading()
+        isPostInProgress = false
+        ImageUtils.showToast(requireContext(), errorMessage)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        hideLoading()
-
     }
 }

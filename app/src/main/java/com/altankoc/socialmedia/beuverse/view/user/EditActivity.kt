@@ -19,17 +19,19 @@ import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.ActivityEditBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.auth.FirebaseAuth
 
 class EditActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityEditBinding
-
     private lateinit var userViewModel: UserViewModel
-
-
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
+
     private var selectedImageUri: Uri? = null
+    private var currentProfileImageUrl: String = ""
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,49 +44,50 @@ class EditActivity : AppCompatActivity() {
             insets
         }
 
-        val userRepository = UserRepository()
-        val factory = UserViewModelFactory(userRepository)
-        userViewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
-        val currentUser = FirebaseAuth.getInstance().currentUser
+        initViewModel()
+        setupClickListeners()
+        registerLaunchers()
+        loadUserData()
+    }
 
+    private fun initViewModel() {
+        val factory = UserViewModelFactory(UserRepository())
+        userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+    }
 
+    private fun loadUserData() {
+        currentUser?.let { user ->
+            userViewModel.getUserProfile(user.uid) { profile ->
+                profile?.let {
+                    binding.apply {
+                        profilEditTextNickname.setText(it.nickname)
+                        profilEditTextAdSoyad.setText(it.username)
+                        profilEditTextMail.setText(it.email)
+                        profilEditTextAboutMe.setText(it.aboutMe)
+                        profilEditTextDepartment.setText(it.department)
 
-        if(currentUser != null){
-            userViewModel.getUserProfile(currentUser.uid) { user ->
-                if (user != null) {
-                  binding.profilEditTextNickname.setText(user.nickname)
-                    binding.profilEditTextAdSoyad.setText(user.username)
-                    binding.profilEditTextMail.setText(user.email)
-                    binding.profilEditTextAboutMe.setText(user.aboutMe)
-                    binding.profilEditTextDepartment.setText(user.department)
-
-
-                    val profileImageUrl = user.profileImage
-                    if (profileImageUrl.isNotEmpty()) {
-                        Glide.with(this)
-                            .load(profileImageUrl)
-                            .placeholder(R.drawable.default_pp)
-                            .error(R.drawable.default_pp)
-                            .into(binding.imageViewProfile)
-                    } else {
-                        binding.imageViewProfile.setImageResource(R.drawable.default_pp)
+                        currentProfileImageUrl = it.profileImage
+                        loadProfileImage(it.profileImage)
                     }
-
-                } else {
                 }
             }
         }
+    }
 
+    private fun loadProfileImage(imageUrl: String) {
+        Glide.with(this)
+            .load(imageUrl.ifEmpty { R.drawable.default_pp })
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .circleCrop()
+            .error(R.drawable.default_pp)
+            .into(binding.imageViewProfile)
+    }
 
-
+    private fun setupClickListeners() {
         binding.profilCloseMageButton.setOnClickListener {
-            val intent = Intent(this@EditActivity, UserActivity::class.java)
-            startActivity(intent)
             finish()
         }
 
-
-        registerLaunchers()
         binding.imageViewProfile.setOnClickListener {
             ImageUtils.checkAndRequestPermission(
                 activity = this,
@@ -96,59 +99,93 @@ class EditActivity : AppCompatActivity() {
         }
 
         binding.profilKaydetSaveButton.setOnClickListener {
-            val newNickname = binding.profilEditTextNickname.text.toString().trim()
-            val newUsername = binding.profilEditTextAdSoyad.text.toString().trim()
-            val newDepartment = binding.profilEditTextDepartment.text.toString().trim()
-            val newAboutMe = binding.profilEditTextAboutMe.text.toString().trim()
-
-            val profileImage = selectedImageUri?.toString()
-            if (currentUser != null){
-
-                userViewModel.updateUserProfile(
-                    currentUser.uid,
-                    newUsername,
-                    newNickname,
-                    newDepartment,
-                    newAboutMe,
-                    profileImage
-                ){
-                    val intent = Intent(this@EditActivity, UserActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+            updateProfile()
         }
-
-
-
-
     }
 
+    private fun updateProfile() {
+        currentUser?.let { user ->
+//            binding.progressBar.visibility = View.VISIBLE
 
-    private fun registerLaunchers() {
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    ImageUtils.openGallery(galleryLauncher)
-                } else {
-                    ImageUtils.showToast(this, "Galeri erişim izni reddedildi.")
+            val updatedUser = mapOf(
+                "username" to binding.profilEditTextAdSoyad.text.toString().trim(),
+                "nickname" to binding.profilEditTextNickname.text.toString().trim(),
+                "department" to binding.profilEditTextDepartment.text.toString().trim(),
+                "aboutMe" to binding.profilEditTextAboutMe.text.toString().trim()
+            )
+
+            when {
+                selectedImageUri != null -> {
+                    // Yeni resimle güncelle
+                    userViewModel.updateProfileWithImage(
+                        userId = user.uid,
+                        username = updatedUser["username"]!!,
+                        nickname = updatedUser["nickname"]!!,
+                        department = updatedUser["department"]!!,
+                        aboutMe = updatedUser["aboutMe"]!!,
+                        oldImageUrl = currentProfileImageUrl,
+                        newImageUri = selectedImageUri!!
+                    ) { result ->
+                        handleUpdateResult(result)
+                    }
                 }
-            }
-
-        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if (result.resultCode == RESULT_OK){
-                val intentData = result.data
-                if (intentData != null){
-                    selectedImageUri = intentData.data
-                    selectedImageUri?.let { uri ->
-                        Glide.with(this)
-                            .load(uri)
-                            .into(binding.imageViewProfile)
+                currentProfileImageUrl.isNotEmpty() -> {
+                    // Resmi değiştirmeden güncelle
+                    userViewModel.updateUserProfile(
+                        uid = user.uid,
+                        username = updatedUser["username"]!!,
+                        nickname = updatedUser["nickname"]!!,
+                        department = updatedUser["department"]!!,
+                        aboutMe = updatedUser["aboutMe"]!!,
+                        profileImage = currentProfileImageUrl
+                    ) { result ->
+                        handleUpdateResult(result)
+                    }
+                }
+                else -> {
+                    // Hiç resim yokken güncelle
+                    userViewModel.updateUserProfile(
+                        uid = user.uid,
+                        username = updatedUser["username"]!!,
+                        nickname = updatedUser["nickname"]!!,
+                        department = updatedUser["department"]!!,
+                        aboutMe = updatedUser["aboutMe"]!!,
+                        profileImage = ""
+                    ) { result ->
+                        handleUpdateResult(result)
                     }
                 }
             }
         }
     }
 
+    private fun handleUpdateResult(result: String) {
+//        binding.progressBar.visibility = View.GONE
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
 
+        if (result.contains("başarılı", ignoreCase = true)) {
+            setResult(RESULT_OK)
+            finish()
+        }
+    }
+
+    private fun registerLaunchers() {
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) ImageUtils.openGallery(galleryLauncher)
+            else Toast.makeText(this, "Galeri izni gerekiyor", Toast.LENGTH_SHORT).show()
+        }
+
+        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    selectedImageUri = uri
+                    Glide.with(this)
+                        .load(uri)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .circleCrop()
+                        .into(binding.imageViewProfile)
+                }
+            }
+        }
+    }
 }
