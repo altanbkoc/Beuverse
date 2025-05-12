@@ -1,5 +1,7 @@
 package com.altankoc.socialmedia.beuverse.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.model.Post
+import com.altankoc.socialmedia.beuverse.view.user.ViewUserActivity
 import com.altankoc.socialmedia.databinding.RecyclerRowBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -29,6 +32,8 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
         val post = getItem(position)
+
+
 
         with(holder.binding) {
             // Kullanıcı bilgileri
@@ -78,7 +83,6 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
                 .error(R.drawable.default_pp)
                 .into(imageViewProfile)
 
-
             if (post.imageUrl.isNotEmpty()) {
                 imageViewPost.visibility = View.VISIBLE
                 Glide.with(root.context)
@@ -90,7 +94,28 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
             } else {
                 imageViewPost.visibility = View.GONE
             }
+            tvPostUsername.setOnClickListener {
+                    viewOtherUserProfile(holder.itemView.context,post.userId)
+            }
+            cardViewProfilePic.setOnClickListener {
+                viewOtherUserProfile(holder.itemView.context,post.userId)
+
+            }
+
+
+
         }
+
+
+
+    }
+
+
+    fun viewOtherUserProfile(context: Context,userId: String){
+        val intent = Intent(context, ViewUserActivity::class.java)
+        intent.putExtra("userid",userId)
+        context.startActivity(intent)
+
     }
 
     class PostDiffCallback : DiffUtil.ItemCallback<Post>() {

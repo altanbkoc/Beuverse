@@ -52,6 +52,7 @@
         android:layout_marginTop="32dp"
         android:hint="E-posta"
         app:boxStrokeColor="#27374D"
+        app:endIconMode="clear_text"
         app:hintTextColor="#526D82"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
