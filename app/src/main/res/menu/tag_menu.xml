@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Tümü"
+        android:id="@+id/tagTumu"/>
+
+    <item android:title="Sosyal"
+        android:id="@+id/tagSosyal"/>
+
+    <item android:title="Sikayet"
+        android:id="@+id/tagSikayet"/>
+
+
+    <item android:title="Soru"
+        android:id="@+id/tagSoru"/>
+
+    <item android:title="Ticari"
+        android:id="@+id/tagTicari"/>
+
+
+</menu>
