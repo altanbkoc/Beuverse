@@ -104,8 +104,9 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun updateProfile() {
+        binding.loadingOverlay.visibility = View.VISIBLE
+
         currentUser?.let { user ->
-//            binding.progressBar.visibility = View.VISIBLE
 
             val updatedUser = mapOf(
                 "username" to binding.profilEditTextAdSoyad.text.toString().trim(),
@@ -160,7 +161,8 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun handleUpdateResult(result: String) {
-//        binding.progressBar.visibility = View.GONE
+        binding.loadingOverlay.visibility = View.GONE
+
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
 
         if (result.contains("başarılı", ignoreCase = true)) {

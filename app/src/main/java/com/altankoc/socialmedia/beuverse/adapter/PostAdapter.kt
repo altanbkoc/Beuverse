@@ -62,6 +62,10 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
             }
 
             tvPostTag.text = post.tag
+            val date = java.util.Date(post.timestamp)
+            val format = java.text.SimpleDateFormat("dd MMM yyyy HH:mm", java.util.Locale("tr"))
+            val formattedDate = format.format(date)
+            tvPostDate.text = "$formattedDate tarihinde paylaşıldı"
 
             val text = post.explanation.toString().trim()
             if(text.isEmpty()){
