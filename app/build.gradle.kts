@@ -4,7 +4,6 @@ plugins {
     id ("androidx.navigation.safeargs.kotlin")
     id ("kotlin-kapt")
     id("com.google.gms.google-services")
-
 }
 
 android {
