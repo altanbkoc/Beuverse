@@ -72,6 +72,7 @@ class RegisterFragment : Fragment() {
                     binding.root.postDelayed({
                         val intent = Intent(requireActivity(), UserActivity::class.java)
                         startActivity(intent)
+                        requireActivity().finish()
                     },1000)
 
                }
