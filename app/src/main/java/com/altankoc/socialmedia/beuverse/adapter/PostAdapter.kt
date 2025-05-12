@@ -35,14 +35,38 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
             tvPostUsername.text = post.userUsername
             tvPostNickname.text = "@${post.userNickname}"
 
-            if(post.tag == "Soru"){
-                tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.strong_blue))            }
-            else{
+            when(post.tag){
+                "Soru" -> {
+                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.soruColor))
+                }
+                "Ticaret" -> {
+                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.ticaretColor))
+                }
+                "Şikaet" -> {
+                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.sikayetColor))
+
+                }
+                "Sosyal" -> {
+                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.sosyalColor))
+                }
+                else -> {
+                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.deep_blue))
+
+                }
 
             }
+
             tvPostTag.text = post.tag
 
-            tvPostDescription.text = post.explanation
+            val text = post.explanation.toString().trim()
+            if(text.isEmpty()){
+                tvPostDescription.text = post.explanation
+                tvPostDescription.visibility = View.GONE
+            }else{
+                tvPostDescription.text = post.explanation
+                tvPostDescription.visibility = View.VISIBLE
+            }
+
 
             // Profil resmi (Storage URL'si)
             Glide.with(root.context)
@@ -54,14 +78,14 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
                 .error(R.drawable.default_pp)
                 .into(imageViewProfile)
 
-            // Post resmi (Storage URL'si)
+
             if (post.imageUrl.isNotEmpty()) {
                 imageViewPost.visibility = View.VISIBLE
                 Glide.with(root.context)
                     .load(post.imageUrl)
                     .transition(DrawableTransitionOptions.withCrossFade(300))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .override(1000, 1000) // Optimize edilmiş boyut
+                    .override(1000, 1000)
                     .into(imageViewPost)
             } else {
                 imageViewPost.visibility = View.GONE

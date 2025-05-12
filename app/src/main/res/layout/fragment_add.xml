@@ -110,10 +110,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/add_comment_background"
-                android:inputType="textPersonName"
+                android:inputType="textMultiLine"
                 android:maxLength="300"
-                android:textColor="#27374D" />
+                android:textColor="#27374D"
+                android:lines="4"
+                android:minLines="1"
+                android:maxLines="6"
+                android:scrollHorizontally="false"
+                android:gravity="top|start" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
             android:id="@+id/buttonPaylas"
