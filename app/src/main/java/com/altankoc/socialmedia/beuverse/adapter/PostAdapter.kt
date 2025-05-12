@@ -16,6 +16,9 @@ import com.altankoc.socialmedia.databinding.RecyclerRowBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()) {
 
@@ -36,36 +39,30 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
 
 
         with(holder.binding) {
-            // Kullanıcı bilgileri
             tvPostUsername.text = post.userUsername
             tvPostNickname.text = "@${post.userNickname}"
 
-            when(post.tag){
+            when(post.tag) {
                 "Soru" -> {
-                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.soruColor))
+                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_soru)
                 }
                 "Ticaret" -> {
-                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.ticaretColor))
+                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_ticaret)
                 }
-                "Şikaet" -> {
-                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.sikayetColor))
-
+                "Şikayet" -> {
+                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sikayet)
                 }
                 "Sosyal" -> {
-                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.sosyalColor))
+                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sosyal)
                 }
                 else -> {
-                    tvPostTag.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.deep_blue))
-
+                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.color.light_gray_blue)
                 }
-
             }
 
             tvPostTag.text = post.tag
-            val date = java.util.Date(post.timestamp)
-            val format = java.text.SimpleDateFormat("dd MMM yyyy HH:mm", java.util.Locale("tr"))
-            val formattedDate = format.format(date)
-            tvPostDate.text = "$formattedDate tarihinde paylaşıldı"
+            tvPostDate.text = getTimeAgo(post.timestamp)
+
 
             val text = post.explanation.toString().trim()
             if(text.isEmpty()){
@@ -77,7 +74,6 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
             }
 
 
-            // Profil resmi (Storage URL'si)
             Glide.with(root.context)
                 .load(post.userProfileImage.ifEmpty { R.drawable.default_pp })
                 .transition(DrawableTransitionOptions.withCrossFade())
@@ -112,6 +108,27 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
 
 
 
+    }
+
+    private fun getTimeAgo(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val diff = now - timestamp
+
+        val seconds = diff / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        val days = hours / 24
+
+        return when {
+            seconds < 60 -> "$seconds saniye önce"
+            minutes < 60 -> "$minutes dakika önce"
+            hours < 24 -> "$hours saat önce"
+            days < 7 -> "$days gün önce"
+            else -> {
+                val format = SimpleDateFormat("dd MMM yyyy", Locale("tr"))
+                format.format(Date(timestamp))
+            }
+        }
     }
 
 
