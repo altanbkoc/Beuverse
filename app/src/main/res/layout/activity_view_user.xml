@@ -44,7 +44,7 @@
         <ImageView
             android:id="@+id/imageViewProfile"
             android:layout_width="match_parent"
-            android:layout_height="145dp"
+            android:layout_height="match_parent"
             android:contentDescription="Profil Fotoğrafı"
             android:scaleType="centerCrop"
             android:src="@drawable/default_pp" />

@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.repository.UserRepository
 import com.altankoc.socialmedia.beuverse.util.Departments
+import com.altankoc.socialmedia.beuverse.view.login.VerificationActivity
 import com.altankoc.socialmedia.beuverse.view.user.UserActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
@@ -52,7 +54,6 @@ class RegisterFragment : Fragment() {
 
 
 
-        // Adapter oluştur ve AutoCompleteTextView'e ata
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, Departments.departments)
         binding.autoCompleteBolum.setAdapter(adapter)
 
@@ -65,12 +66,19 @@ class RegisterFragment : Fragment() {
             val department = binding.autoCompleteBolum.text.toString()
 
 
+            if (!email.endsWith("@mf.karaelmas.edu.tr")) {
+                Toast.makeText(requireContext(), "Sadece @mf.karaelmas.edu.tr uzantılı e-postalar kabul edilir", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+
             userViewModel.registerUser(email, password, username, nickname, department) { result ->
 
                if(result == "Kayıt başarılı!"){
                    binding.loadingOverlay.visibility = View.VISIBLE
                     binding.root.postDelayed({
-                        val intent = Intent(requireActivity(), UserActivity::class.java)
+                        val intent = Intent(requireActivity(), VerificationActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     },1000)

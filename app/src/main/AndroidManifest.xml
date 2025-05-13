@@ -16,6 +16,9 @@
         android:theme="@style/Theme.SocialMedia"
         tools:targetApi="31">
         <activity
+            android:name=".beuverse.view.login.VerificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".beuverse.view.user.ViewUserActivity"
             android:exported="false" />
         <activity

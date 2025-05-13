@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.isEmailVerified) {
             val intent = Intent(requireContext(), UserActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
@@ -55,26 +55,21 @@ class LoginFragment : Fragment() {
         userViewModel = ViewModelProvider(this,factory).get(UserViewModel::class.java)
 
         binding.buttonGiris.setOnClickListener {
-
             val email = binding.editTextGirisMail.text.toString()
             val password = binding.editTextGirisPw.text.toString()
 
-
-            userViewModel.loginUser(email,password) { result ->
+            userViewModel.loginUser(email, password) { result ->
                 if (result == "Giriş başarılı!") {
                     binding.loadingOverlay.visibility = View.VISIBLE
                     binding.root.postDelayed({
                         startActivity(Intent(requireContext(), UserActivity::class.java))
                         requireActivity().finish()
-                    },1000)
-
+                    }, 1000)
                 } else {
                     Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
                 }
             }
-
         }
-
 
         binding.textViewOrLoginWith.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
