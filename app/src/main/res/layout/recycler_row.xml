@@ -4,32 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="5dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="133dp">
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-                android:id="@+id/tvPostDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="9dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/imageViewPost"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPostNickname" />
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewProfilePic"
@@ -37,7 +25,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                app:cardCornerRadius="40dp"
+                app:cardCornerRadius="25dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -52,40 +40,34 @@
 
             <TextView
                 android:id="@+id/tvPostUsername"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-light"
-                android:text="Deneme Deneme"
                 android:textColor="@color/deep_blue"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/cardViewTag"
                 app:layout_constraintStart_toEndOf="@+id/cardViewProfilePic"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Kullanıcı Adı" />
 
             <TextView
                 android:id="@+id/tvPostNickname"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-light"
-                android:text="Onickname"
+                android:textSize="14sp"
                 android:textStyle="italic"
+                app:layout_constraintEnd_toStartOf="@+id/cardViewTag"
                 app:layout_constraintStart_toEndOf="@+id/cardViewProfilePic"
-                app:layout_constraintTop_toBottomOf="@+id/tvPostUsername" />
-
-            <ImageView
-                android:id="@+id/imageViewPost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPostDescription"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPostUsername"
+                tools:text="\@kullanicitakmaadi" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewTag"
@@ -97,34 +79,118 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-
                 <TextView
                     android:id="@+id/tvPostTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/dark_blue"
-                    android:padding="10dp"
-                    android:text="#Etiket"
-                    android:textColor="@color/off_white" />
-
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/off_white"
+                    android:textSize="12sp"
+                    tools:text="#Etiket" />
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/tvPostDate"
-                android:layout_width="match_parent"
+                android:id="@+id/tvPostDescription"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="TextView"
-                android:textSize="12sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/imageViewPost"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageViewPost" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPostNickname"
+                tools:text="Gönderi açıklaması burada yer alacak." />
 
+            <ImageView
+                android:id="@+id/imageViewPost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                android:maxHeight="300dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPostDescription"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/layoutPostActions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/tvPostDate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewPost">
+
+                <ImageButton
+                    android:id="@+id/buttonLike"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/like"
+                    tools:ignore="TouchTargetSizeCheck"
+                    android:contentDescription="Beğen Butonu" />
+
+                <TextView
+                    android:id="@+id/textViewLikeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="14sp"
+                    tools:text="15" />
+
+                <ImageButton
+                    android:id="@+id/buttonComment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/comment"
+                    tools:ignore="TouchTargetSizeCheck"
+                    android:contentDescription="Yorum Butonu" />
+                <TextView
+                    android:id="@+id/textViewCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="14sp"
+                    tools:text="5" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPostDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textAlignment="viewEnd"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="@+id/layoutPostActions"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/layoutPostActions"
+                tools:text="2 saat önce" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
