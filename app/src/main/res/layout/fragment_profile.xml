@@ -10,8 +10,8 @@
 
     <View
         android:id="@+id/viewWavyBackground"
-        android:layout_width="518dp"
-        android:layout_height="114dp"
+        android:layout_width="600dp"
+        android:layout_height="270dp"
         android:background="@drawable/profile_wavy_top_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/cardViewProfilePic"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="105dp"
         app:cardCornerRadius="100dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
         <ImageView
             android:id="@+id/imageViewProfile"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="145dp"
             android:contentDescription="Profil Fotoğrafı"
             android:scaleType="centerCrop"
             android:src="@drawable/default_pp" />
@@ -44,9 +44,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif-medium"
         android:text="Hakkımda yazısı"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewBolum" />
@@ -56,7 +57,7 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:contentDescription="Menu"
@@ -86,11 +87,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-medium"
         android:text="Bilgisayar"
-        android:textSize="20sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNickname" />
@@ -100,12 +101,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
         android:text="Ad Soyad"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,12 +119,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-medium"
         android:text="\@nickname"
-        android:textSize="16sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="246dp"
+        android:layout_height="37dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:text="Şu tarihte katıldınız"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="788dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
