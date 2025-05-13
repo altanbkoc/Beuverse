@@ -46,6 +46,7 @@ class UserRepository {
 
             val result = auth.createUserWithEmailAndPassword(email, password).await()
 
+            result.user?.sendEmailVerification()?.await()
 
             val user = User(
                 uid = result.user?.uid ?: "",
@@ -71,6 +72,14 @@ class UserRepository {
     suspend fun loginUser(email: String, password: String): String {
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
+
+
+            val user = auth.currentUser
+            if (user != null && !user.isEmailVerified) {
+                auth.signOut()
+                return "Lütfen e-posta adresinizi doğrulayın!"
+            }
+
             "Giriş başarılı!"
         } catch (e: Exception) {
             e.message ?: "Giriş sırasında hata oluştu!"
