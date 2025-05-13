@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,15 +13,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.model.Post
 import com.altankoc.socialmedia.beuverse.view.user.ViewUserActivity
-import com.altankoc.socialmedia.databinding.RecyclerRowBinding
+import com.altankoc.socialmedia.databinding.RecyclerRowBinding // XML dosyanızın adı recycler_row.xml ise bu doğru
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+// import java.util.concurrent.TimeUnit // TimeUnit artık kullanılmıyor
 
-class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()) {
+class PostAdapter(
+    private val onLikeClicked: (postId: String) -> Unit,
+    private val onCommentClicked: (postId: String) -> Unit
+) : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()) {
+
+    private val currentUserId: String? = FirebaseAuth.getInstance().currentUser?.uid
 
     inner class PostHolder(val binding: RecyclerRowBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -36,43 +44,28 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
         val post = getItem(position)
 
-
-
         with(holder.binding) {
+            // Mevcut Kullanıcı ve Gönderi Bilgileri
             tvPostUsername.text = post.userUsername
             tvPostNickname.text = "@${post.userNickname}"
 
             when(post.tag) {
-                "Soru" -> {
-                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_soru)
-                }
-                "Ticaret" -> {
-                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_ticaret)
-                }
-                "Şikayet" -> {
-                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sikayet)
-                }
-                "Sosyal" -> {
-                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sosyal)
-                }
-                else -> {
-                    tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.color.light_gray_blue)
-                }
+                "Soru" -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_soru)
+                "Ticaret" -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_ticaret)
+                "Şikayet" -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sikayet)
+                "Sosyal" -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.gradient_sosyal)
+                else -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.color.light_gray_blue)
             }
+            tvPostTag.text = "#${post.tag}"
+            tvPostDate.text = getTimeAgo(post.timestamp) // Context parametresi kaldırıldı
 
-            tvPostTag.text = post.tag
-            tvPostDate.text = getTimeAgo(post.timestamp)
-
-
-            val text = post.explanation.toString().trim()
+            val text = post.explanation.trim()
             if(text.isEmpty()){
-                tvPostDescription.text = post.explanation
                 tvPostDescription.visibility = View.GONE
             }else{
                 tvPostDescription.text = post.explanation
                 tvPostDescription.visibility = View.VISIBLE
             }
-
 
             Glide.with(root.context)
                 .load(post.userProfileImage.ifEmpty { R.drawable.default_pp })
@@ -89,27 +82,44 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
                     .load(post.imageUrl)
                     .transition(DrawableTransitionOptions.withCrossFade(300))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .override(1000, 1000)
                     .into(imageViewPost)
             } else {
                 imageViewPost.visibility = View.GONE
             }
-            tvPostUsername.setOnClickListener {
-                    viewOtherUserProfile(holder.itemView.context,post.userId)
+
+            // Kullanıcı profiline tıklama olayları
+            val userProfileClickListener = View.OnClickListener {
+                viewOtherUserProfile(holder.itemView.context, post.userId)
             }
-            cardViewProfilePic.setOnClickListener {
-                viewOtherUserProfile(holder.itemView.context,post.userId)
+            tvPostUsername.setOnClickListener(userProfileClickListener)
+            tvPostNickname.setOnClickListener(userProfileClickListener)
+            cardViewProfilePic.setOnClickListener(userProfileClickListener)
 
+            // --- BEĞENİ İŞLEVSELLİĞİ ---
+            textViewLikeCount.text = post.likeCount.toString()
+            if (currentUserId != null && post.likedBy.contains(currentUserId)) {
+                buttonLike.setImageResource(R.drawable.heart)
+            } else {
+                buttonLike.setImageResource(R.drawable.like)
+            }
+            buttonLike.setOnClickListener {
+                if (currentUserId != null) {
+                    onLikeClicked(post.postId)
+                } else {
+                    Toast.makeText(holder.itemView.context, "Beğenmek için lütfen giriş yapın.", Toast.LENGTH_SHORT).show()
+                }
             }
 
+            // --- YORUM İŞLEVSELLİĞİ ---
+            textViewCommentCount.text = post.commentCount.toString()
 
-
+            buttonComment.setOnClickListener {
+                onCommentClicked(post.postId)
+            }
         }
-
-
-
     }
 
+    // getTimeAgo metodu orijinal haline (string kaynakları olmadan) geri döndürüldü
     private fun getTimeAgo(timestamp: Long): String {
         val now = System.currentTimeMillis()
         val diff = now - timestamp
@@ -118,6 +128,7 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
         val minutes = seconds / 60
         val hours = minutes / 60
         val days = hours / 24
+        // val weeks = days / 7 // Orijinalde bu yoktu, isterseniz ekleyebilirsiniz
 
         return when {
             seconds < 60 -> "$seconds saniye önce"
@@ -125,18 +136,17 @@ class PostAdapter : ListAdapter<Post, PostAdapter.PostHolder>(PostDiffCallback()
             hours < 24 -> "$hours saat önce"
             days < 7 -> "$days gün önce"
             else -> {
-                val format = SimpleDateFormat("dd MMM yyyy", Locale("tr"))
+                // Orijinal SimpleDateFormat'ınız "dd MMM yy" idi.
+                val format = SimpleDateFormat("dd MMM yy", Locale("tr"))
                 format.format(Date(timestamp))
             }
         }
     }
 
-
-    fun viewOtherUserProfile(context: Context,userId: String){
+    private fun viewOtherUserProfile(context: Context, userId: String){
         val intent = Intent(context, ViewUserActivity::class.java)
-        intent.putExtra("userid",userId)
+        intent.putExtra("userid", userId)
         context.startActivity(intent)
-
     }
 
     class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
