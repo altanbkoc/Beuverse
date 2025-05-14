@@ -117,7 +117,6 @@ class EditActivity : AppCompatActivity() {
 
             when {
                 selectedImageUri != null -> {
-                    // Yeni resimle güncelle
                     userViewModel.updateProfileWithImage(
                         userId = user.uid,
                         username = updatedUser["username"]!!,
@@ -131,7 +130,6 @@ class EditActivity : AppCompatActivity() {
                     }
                 }
                 currentProfileImageUrl.isNotEmpty() -> {
-                    // Resmi değiştirmeden güncelle
                     userViewModel.updateUserProfile(
                         uid = user.uid,
                         username = updatedUser["username"]!!,
@@ -144,7 +142,6 @@ class EditActivity : AppCompatActivity() {
                     }
                 }
                 else -> {
-                    // Hiç resim yokken güncelle
                     userViewModel.updateUserProfile(
                         uid = user.uid,
                         username = updatedUser["username"]!!,

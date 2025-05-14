@@ -19,10 +19,8 @@ class UserRepository {
     suspend fun uploadProfileImage(userId: String, imageUri: Uri): String {
         val storageRef = storage.getReference("profile_images/$userId")
 
-        // 1. Resmi Storage'a yükle
         storageRef.putFile(imageUri).await()
 
-        // 2. Download URL'yi al
         return storageRef.downloadUrl.await().toString()
     }
 
@@ -100,7 +98,6 @@ class UserRepository {
         }
     }
 
-    // Kullanıcı bilgilerini güncelleme fonksiyonu
     suspend fun updateUserProfile(
         uid: String,
         username: String,
@@ -112,7 +109,7 @@ class UserRepository {
         return try {
             val user = User(
                 uid = uid,
-                email = "", // E-posta güncellenmez, mevcut kullanıcıdan alınabilir
+                email = "",
                 username = username,
                 nickname = nickname,
                 department = department,
@@ -120,7 +117,6 @@ class UserRepository {
                 profileImage = profileImage ?: ""
             )
 
-            // Kullanıcı verilerini güncelle
             firestore.collection("users").document(uid).update(
                 "username", user.username,
                 "nickname", user.nickname,

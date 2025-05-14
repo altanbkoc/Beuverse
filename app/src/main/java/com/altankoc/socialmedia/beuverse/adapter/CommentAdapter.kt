@@ -1,13 +1,13 @@
-package com.altankoc.socialmedia.beuverse.adapter // Kendi paket adınızla değiştirin
+package com.altankoc.socialmedia.beuverse.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.altankoc.socialmedia.R // Kendi R dosyanızın yolu
+import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.model.Comment
-import com.altankoc.socialmedia.databinding.ItemCommentBinding // item_comment.xml için ViewBinding sınıfı
+import com.altankoc.socialmedia.databinding.ItemCommentBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import java.text.SimpleDateFormat
@@ -22,20 +22,18 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Co
             binding.textViewCommenterUsername.text = comment.userUsername
             binding.textViewCommentText.text = comment.text
 
-            // Profil resmi yükleme
             Glide.with(binding.imageViewCommenterProfile.context)
-                .load(comment.userProfileImage.ifEmpty { R.drawable.default_pp }) // Varsayılan resim
+                .load(comment.userProfileImage.ifEmpty { R.drawable.default_pp })
                 .circleCrop()
                 .placeholder(R.drawable.default_pp)
                 .error(R.drawable.default_pp)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.imageViewCommenterProfile)
 
-            // Zaman damgasını formatlama
             if (comment.timestamp != null) {
                 binding.textViewCommentTimestamp.text = formatTimestamp(comment.timestamp)
             } else {
-                binding.textViewCommentTimestamp.text = "Şimdi" // Veya boş bırakılabilir
+                binding.textViewCommentTimestamp.text = "Şimdi"
             }
         }
 
@@ -54,7 +52,6 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Co
                 hours < 24 -> "$hours saat önce"
                 days < 7 -> "$days gün önce"
                 else -> {
-                    // Daha uzun süreler için belirli bir tarih formatı
                     val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("tr"))
                     sdf.format(date)
                 }
@@ -73,11 +70,11 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(Co
 
     class CommentDiffCallback : DiffUtil.ItemCallback<Comment>() {
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            return oldItem.commentId == newItem.commentId // Yorum ID'sine göre karşılaştır
+            return oldItem.commentId == newItem.commentId
         }
 
         override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            return oldItem == newItem // Tüm içerik aynı mı diye bak (data class'ın equals'ı)
+            return oldItem == newItem
         }
     }
 }

@@ -9,18 +9,6 @@
     tools:context=".beuverse.view.user.ViewUserActivity">
 
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="246dp"
-        android:layout_height="37dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:text="Şu tarihte katıldınız"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="766dp" />
-
     <View
         android:id="@+id/viewWavyBackground"
         android:layout_width="600dp"
@@ -57,7 +45,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="Hakkımda yazısı"
         android:textColor="@android:color/black"
         android:textSize="24sp"
@@ -86,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-medium"
         android:text="Bilgisayar"
@@ -116,10 +104,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="-2dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-light"
         android:text="\@nickname"
+        android:textAlignment="center"
         android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

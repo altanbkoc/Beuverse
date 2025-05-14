@@ -45,43 +45,44 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val userRepository = UserRepository()
         val factory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
         val currentUser = FirebaseAuth.getInstance().currentUser
 
-
         if (currentUser != null) {
             userViewModel.getUserProfile(currentUser.uid) { user ->
+                binding.loadingOverlay.visibility = View.GONE
+
                 if (user != null) {
+                    binding.cardViewProfilePic.visibility = View.VISIBLE
+                    binding.textViewName.visibility = View.VISIBLE
+                    binding.textViewNickname.visibility = View.VISIBLE
+                    binding.textViewBolum.visibility = View.VISIBLE
+                    binding.textViewAbout.visibility = View.VISIBLE
+                    binding.floatingActionButton.visibility = View.VISIBLE
+                    binding.viewWavyBackground.visibility = View.VISIBLE
+
                     binding.textViewName.text = user.username
-                    binding.textViewNickname.text = "@"+user.nickname
+                    binding.textViewNickname.text = "@${user.nickname}"
                     binding.textViewBolum.text = user.department
                     binding.textViewAbout.text = user.aboutMe
-                    binding.loadingOverlay.visibility = View.GONE
 
-                    // Profil resmi varsa, Glide ile yükle
                     val profileImageUrl = user.profileImage
                     if (profileImageUrl.isNotEmpty()) {
                         Glide.with(this)
                             .load(profileImageUrl)
                             .placeholder(R.drawable.default_pp)
                             .error(R.drawable.default_pp)
-                            .into(binding.imageViewProfile) // imageViewProfile, profil resmini gösterecek olan ImageView
+                            .into(binding.imageViewProfile)
                     } else {
-                        binding.imageViewProfile.setImageResource(R.drawable.default_pp) // Varsayılan profil resmi
+                        binding.imageViewProfile.setImageResource(R.drawable.default_pp)
                     }
-
                 } else {
-                    Toast.makeText(requireContext(), "Kullanıcı bilgileri alınamadı", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Kullanıcı bilgileri alınamadı!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
-
-
-
 
         binding.floatingActionButton.setOnClickListener {
             val popup = PopupMenu(requireContext(), binding.floatingActionButton)
@@ -90,29 +91,26 @@ class ProfileFragment : Fragment() {
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_edit_profile -> {
-                        // Profili düzenleye git
                         val intent = Intent(requireActivity(), EditActivity::class.java)
                         startActivity(intent)
                         true
                     }
                     R.id.action_logout -> {
-                        // Oturumu kapat
                         MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Çıkış")
                             .setIcon(R.drawable.baseline_power_settings_new_24)
                             .setMessage("Çıkış yapmak istediğinize emin misiniz?")
                             .setPositiveButton("Evet") { _, _ ->
-                            binding.loadingOverlay.visibility = View.VISIBLE
+                                binding.loadingOverlay.visibility = View.VISIBLE
                                 binding.root.postDelayed({
                                     userViewModel.logoutUser()
                                     val intent = Intent(requireContext(), LoginActivity::class.java)
                                     startActivity(intent)
                                     requireActivity().finish()
-                                },1500)
+                                }, 1500)
                             }
                             .setNegativeButton("Hayır", null)
                             .show()
-
                         true
                     }
                     else -> false
@@ -121,9 +119,6 @@ class ProfileFragment : Fragment() {
 
             popup.show()
         }
-
-
-
     }
 
     override fun onDestroyView() {

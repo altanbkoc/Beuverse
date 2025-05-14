@@ -1,6 +1,5 @@
-package com.altankoc.socialmedia.beuverse.model // Kendi paket adınızla değiştirin
+package com.altankoc.socialmedia.beuverse.model
 
-// Post veri modeli
 data class Post(
     val postId: String = "",
     val userId: String = "",
@@ -13,6 +12,5 @@ data class Post(
     val timestamp: Long = 0L,
     val likeCount: Int = 0,
     val likedBy: List<String> = emptyList(),
-    // YENİ EKLENEN ALAN
-    val commentCount: Int = 0 // Gönderinin toplam yorum sayısı
+    val commentCount: Int = 0
 )

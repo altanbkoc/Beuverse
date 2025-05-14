@@ -23,13 +23,10 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                // 1. Eski resmi sil
                 userRepository.deleteOldProfileImage(oldImageUrl)
 
-                // 2. Yeni resmi yükle
                 val newUrl = userRepository.uploadProfileImage(userId, newImageUri)
 
-                // 3. Profili güncelle
                 val result = userRepository.updateUserProfile(
                     uid = userId,
                     username = username,
@@ -92,7 +89,6 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    // Kullanıcıyı güncelleme fonksiyonu
     fun updateUserProfile(
         uid: String,
         username: String,

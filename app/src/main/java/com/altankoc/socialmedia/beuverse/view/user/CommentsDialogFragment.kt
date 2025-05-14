@@ -1,6 +1,5 @@
-package com.altankoc.socialmedia.beuverse.view.user // Kendi paket adınızla değiştirin
+package com.altankoc.socialmedia.beuverse.view.user
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +7,18 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels // activityViewModels için
-import androidx.lifecycle.ViewModelProvider // ViewModelProvider için (eğer activityViewModels kullanılmayacaksa)
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.adapter.CommentAdapter
 import com.altankoc.socialmedia.beuverse.model.Comment
-import com.altankoc.socialmedia.beuverse.model.User // User modelini import et
+import com.altankoc.socialmedia.beuverse.model.User
 import com.altankoc.socialmedia.beuverse.repository.PostRepository
 import com.altankoc.socialmedia.beuverse.repository.UserRepository
 import com.altankoc.socialmedia.beuverse.viewmodel.PostViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.PostViewModelFactory
-import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel // UserViewModel'i import et
-import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory // UserViewModelFactory'yi import et
-import com.altankoc.socialmedia.databinding.FragmentCommentsDialogBinding // fragment_comments_dialog.xml için ViewBinding
+import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
+import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
+import com.altankoc.socialmedia.databinding.FragmentCommentsDialogBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Date
 
@@ -33,25 +30,21 @@ class CommentsDialogFragment : DialogFragment() {
     private lateinit var commentAdapter: CommentAdapter
     private var postId: String? = null
 
-    // PostViewModel'i Activity scope'unda veya parent Fragment scope'unda kullanmak daha iyi olabilir.
-    // Eğer HomeFragment'tan açılıyorsa, parentFragment?.viewModels veya activityViewModels kullanılabilir.
-    // Şimdilik activityViewModels kullanalım, bu UserActivity scope'unda bir ViewModel örneği paylaşır.
+
     private val postViewModel: PostViewModel by activityViewModels {
         PostViewModelFactory(PostRepository())
     }
-    // Yorum yapan kullanıcının bilgilerini almak için UserViewModel
     private val userViewModel: UserViewModel by activityViewModels {
         UserViewModelFactory(UserRepository())
     }
 
-    private var currentUserData: User? = null // Yorum yapan kullanıcının bilgilerini tutmak için
+    private var currentUserData: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             postId = it.getString(ARG_POST_ID)
         }
-        // Kullanıcı bilgilerini önceden çek
         FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
             userViewModel.getUserProfile(uid) { user ->
                 currentUserData = user
@@ -87,13 +80,11 @@ class CommentsDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        // Dialog boyutunu ayarla
         dialog?.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
-        // İsteğe bağlı: Dialog'un alt kısmında görünmesini sağlamak için
-        // dialog?.window?.setGravity(Gravity.BOTTOM)
+
     }
 
 
@@ -124,7 +115,6 @@ class CommentsDialogFragment : DialogFragment() {
         postViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let {
                 Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                // Hata mesajı gösterildikten sonra ViewModel'de temizlenebilir
             }
         }
 
@@ -132,12 +122,11 @@ class CommentsDialogFragment : DialogFragment() {
             status?.let { success ->
                 if (success) {
                     binding.editTextComment.text?.clear()
-                    // İsteğe bağlı: "Yorum eklendi" mesajı
-                    // Toast.makeText(context, "Yorumunuz eklendi.", Toast.LENGTH_SHORT).show()
+
                 } else {
                     Toast.makeText(context, "Yorum eklenirken bir hata oluştu.", Toast.LENGTH_SHORT).show()
                 }
-                postViewModel.clearCommentAddedStatus() // Durumu sıfırla
+                postViewModel.clearCommentAddedStatus()
             }
         }
     }
@@ -151,7 +140,7 @@ class CommentsDialogFragment : DialogFragment() {
             binding.textInputLayoutComment.error = "Yorum boş olamaz."
             return
         } else {
-            binding.textInputLayoutComment.error = null // Hatayı temizle
+            binding.textInputLayoutComment.error = null
         }
 
         if (currentPostId == null) {
@@ -161,21 +150,15 @@ class CommentsDialogFragment : DialogFragment() {
 
         if (firebaseUser == null) {
             Toast.makeText(context, "Yorum yapmak için giriş yapmalısınız.", Toast.LENGTH_SHORT).show()
-            // Burada giriş ekranına yönlendirme yapılabilir
             return
         }
 
-        // currentUserData'nın yüklenmiş olmasını bekle veya kontrol et
         if (currentUserData == null) {
-            // Kullanıcı verileri henüz yüklenmemişse, tekrar çekmeyi deneyebilir veya bir uyarı verebilirsiniz.
-            // Şimdilik basit bir uyarı:
             Toast.makeText(context, "Kullanıcı bilgileri yükleniyor, lütfen tekrar deneyin.", Toast.LENGTH_SHORT).show()
-            // Veya kullanıcı bilgilerini burada tekrar çek:
             userViewModel.getUserProfile(firebaseUser.uid) { user ->
                 if (user != null) {
                     currentUserData = user
-                    // Tekrar göndermeyi dene (recursive çağrıya dikkat, bir flag ile kontrol edilebilir)
-                    if (binding.editTextComment.text.toString().trim().isNotEmpty()){ // Tekrar kontrol et
+                    if (binding.editTextComment.text.toString().trim().isNotEmpty()){
                         createAndSendComment(currentPostId, user, commentText)
                     }
                 } else {
@@ -189,13 +172,12 @@ class CommentsDialogFragment : DialogFragment() {
 
     private fun createAndSendComment(postId: String, commenterInfo: User, text: String){
         val newComment = Comment(
-            // commentId Firestore tarafından otomatik atanacak veya Repository'de atanabilir
             postId = postId,
             userId = commenterInfo.uid,
-            userUsername = commenterInfo.username, // Veya nickname, hangisini göstermek isterseniz
+            userUsername = commenterInfo.username,
             userProfileImage = commenterInfo.profileImage,
             text = text,
-            timestamp = Date() // Firestore @ServerTimestamp bunu ezecek
+            timestamp = Date()
         )
         postViewModel.addCommentToPost(postId, newComment)
     }
@@ -203,7 +185,7 @@ class CommentsDialogFragment : DialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.recyclerViewComments.adapter = null // RecyclerView adaptörünü temizle
+        binding.recyclerViewComments.adapter = null
         _binding = null
     }
 
