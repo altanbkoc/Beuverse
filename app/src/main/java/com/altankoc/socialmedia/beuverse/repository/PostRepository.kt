@@ -2,7 +2,7 @@ package com.altankoc.socialmedia.beuverse.repository
 
 import android.net.Uri
 import android.util.Log
-import com.altankoc.socialmedia.beuverse.model.Comment // Comment modelini import et
+import com.altankoc.socialmedia.beuverse.model.Comment
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.altankoc.socialmedia.beuverse.model.Post
@@ -64,7 +64,6 @@ class PostRepository {
         return try {
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(postRef)
-                // val currentLikes = snapshot.getLong("likeCount")?.toInt() ?: 0 // Bu satıra gerek yok
                 val likedByList = snapshot.get("likedBy") as? List<String> ?: emptyList()
 
                 if (likedByList.contains(userId)) {
@@ -74,7 +73,7 @@ class PostRepository {
                     transaction.update(postRef, "likeCount", FieldValue.increment(1))
                     transaction.update(postRef, "likedBy", FieldValue.arrayUnion(userId))
                 }
-                null // Transaction başarılı olursa null döndürülür
+                null
             }.await()
             true
         } catch (e: Exception) {
@@ -83,25 +82,22 @@ class PostRepository {
         }
     }
 
-    // YENİ FONKSİYON: Gönderiye yorum ekleme
     suspend fun addCommentToPost(postId: String, comment: Comment): Boolean {
         return try {
             val postRef = postsCollection.document(postId)
-            val commentRef = postRef.collection("comments").document() // Yorum için yeni ID oluştur
+            val commentRef = postRef.collection("comments").document()
 
             firestore.runTransaction { transaction ->
-                // 1. Yorumu comments alt koleksiyonuna ekle
-                // Yorum ID'sini comment nesnesine ata (eğer Comment modelinde commentId varsa ve boşsa)
+
                 val finalComment = if (comment.commentId.isEmpty()) {
                     comment.copy(commentId = commentRef.id, postId = postId)
                 } else {
-                    comment.copy(postId = postId) // postId'nin doğru olduğundan emin ol
+                    comment.copy(postId = postId)
                 }
                 transaction.set(commentRef, finalComment)
 
-                // 2. Ana gönderideki commentCount'ı artır
                 transaction.update(postRef, "commentCount", FieldValue.increment(1))
-                null // Transaction başarılı
+                null
             }.await()
             true
         } catch (e: Exception) {
@@ -110,12 +106,11 @@ class PostRepository {
         }
     }
 
-    // YENİ FONKSİYON: Bir gönderinin yorumlarını çekme
     suspend fun getCommentsForPost(postId: String): List<Comment> {
         return try {
             val snapshot = postsCollection.document(postId)
                 .collection("comments")
-                .orderBy("timestamp", Query.Direction.ASCENDING) // Yorumları eskiden yeniye sırala
+                .orderBy("timestamp", Query.Direction.ASCENDING)
                 .get()
                 .await()
             snapshot.toObjects(Comment::class.java)

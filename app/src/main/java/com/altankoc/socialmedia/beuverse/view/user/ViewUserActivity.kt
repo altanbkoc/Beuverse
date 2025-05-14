@@ -60,7 +60,6 @@ class ViewUserActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
-                // Hata logla veya kullanıcıya bildir
             }
 
 

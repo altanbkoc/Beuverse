@@ -7,12 +7,12 @@
     android:background="@drawable/navbar_background"
     tools:context=".beuverse.view.user.ProfileFragment">
 
-
     <View
         android:id="@+id/viewWavyBackground"
         android:layout_width="600dp"
         android:layout_height="270dp"
         android:background="@drawable/profile_wavy_top_background"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,6 +22,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="105dp"
+        android:visibility="gone"
         app:cardCornerRadius="100dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,14 +45,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-light"
         android:text="Hakkımda yazısı"
         android:textColor="@android:color/black"
         android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewBolum" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -61,6 +62,7 @@
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:contentDescription="Menu"
+        android:visibility="gone"
         android:src="@drawable/baseline_settings_24"
         app:backgroundTint="@color/dark_blue"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,8 +74,7 @@
         android:layout_height="match_parent"
         android:background="#80000000"
         android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
+        android:focusable="true">
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -87,11 +88,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-medium"
         android:text="Bilgisayar"
         android:textSize="26sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNickname" />
@@ -103,11 +105,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif-light"
         android:text="Ad Soyad"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewProfilePic" />
@@ -117,26 +121,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="-2dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-light"
         android:text="\@nickname"
+        android:textAlignment="center"
         android:textSize="26sp"
+        android:textStyle="italic"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewName" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="246dp"
-        android:layout_height="37dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:text="Şu tarihte katıldınız"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="788dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

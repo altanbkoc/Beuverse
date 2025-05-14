@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.repository.UserRepository
 import com.altankoc.socialmedia.beuverse.view.user.UserActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
 import com.altankoc.socialmedia.databinding.FragmentLoginBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 
 

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.model.Post
 import com.altankoc.socialmedia.beuverse.view.user.ViewUserActivity
-import com.altankoc.socialmedia.databinding.RecyclerRowBinding // XML dosyanızın adı recycler_row.xml ise bu doğru
+import com.altankoc.socialmedia.databinding.RecyclerRowBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-// import java.util.concurrent.TimeUnit // TimeUnit artık kullanılmıyor
 
 class PostAdapter(
     private val onLikeClicked: (postId: String) -> Unit,
@@ -45,7 +44,6 @@ class PostAdapter(
         val post = getItem(position)
 
         with(holder.binding) {
-            // Mevcut Kullanıcı ve Gönderi Bilgileri
             tvPostUsername.text = post.userUsername
             tvPostNickname.text = "@${post.userNickname}"
 
@@ -57,7 +55,7 @@ class PostAdapter(
                 else -> tvPostTag.background = ContextCompat.getDrawable(holder.itemView.context, R.color.light_gray_blue)
             }
             tvPostTag.text = "#${post.tag}"
-            tvPostDate.text = getTimeAgo(post.timestamp) // Context parametresi kaldırıldı
+            tvPostDate.text = getTimeAgo(post.timestamp)
 
             val text = post.explanation.trim()
             if(text.isEmpty()){
@@ -87,7 +85,6 @@ class PostAdapter(
                 imageViewPost.visibility = View.GONE
             }
 
-            // Kullanıcı profiline tıklama olayları
             val userProfileClickListener = View.OnClickListener {
                 viewOtherUserProfile(holder.itemView.context, post.userId)
             }
@@ -95,7 +92,6 @@ class PostAdapter(
             tvPostNickname.setOnClickListener(userProfileClickListener)
             cardViewProfilePic.setOnClickListener(userProfileClickListener)
 
-            // --- BEĞENİ İŞLEVSELLİĞİ ---
             textViewLikeCount.text = post.likeCount.toString()
             if (currentUserId != null && post.likedBy.contains(currentUserId)) {
                 buttonLike.setImageResource(R.drawable.heart)
@@ -106,11 +102,10 @@ class PostAdapter(
                 if (currentUserId != null) {
                     onLikeClicked(post.postId)
                 } else {
-                    Toast.makeText(holder.itemView.context, "Beğenmek için lütfen giriş yapın.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(holder.itemView.context, "Beğenmek için lütfen giriş yapın!", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            // --- YORUM İŞLEVSELLİĞİ ---
             textViewCommentCount.text = post.commentCount.toString()
 
             buttonComment.setOnClickListener {
@@ -119,7 +114,6 @@ class PostAdapter(
         }
     }
 
-    // getTimeAgo metodu orijinal haline (string kaynakları olmadan) geri döndürüldü
     private fun getTimeAgo(timestamp: Long): String {
         val now = System.currentTimeMillis()
         val diff = now - timestamp
@@ -128,7 +122,6 @@ class PostAdapter(
         val minutes = seconds / 60
         val hours = minutes / 60
         val days = hours / 24
-        // val weeks = days / 7 // Orijinalde bu yoktu, isterseniz ekleyebilirsiniz
 
         return when {
             seconds < 60 -> "$seconds saniye önce"
@@ -136,7 +129,6 @@ class PostAdapter(
             hours < 24 -> "$hours saat önce"
             days < 7 -> "$days gün önce"
             else -> {
-                // Orijinal SimpleDateFormat'ınız "dd MMM yy" idi.
                 val format = SimpleDateFormat("dd MMM yy", Locale("tr"))
                 format.format(Date(timestamp))
             }

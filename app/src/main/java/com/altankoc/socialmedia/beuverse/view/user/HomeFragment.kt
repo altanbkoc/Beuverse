@@ -4,16 +4,15 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log // Loglama için eklendi (isteğe bağlı)
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
-import android.widget.Toast // Toast için zaten vardı
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-// import androidx.navigation.fragment.findNavController // DialogFragment için bu genellikle gerekmez
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.databinding.FragmentHomeBinding
@@ -118,22 +117,16 @@ class HomeFragment : Fragment() {
         postAdapter = PostAdapter(
             onLikeClicked = { postId ->
                 val currentUserId = firebaseAuth.currentUser?.uid
-                // Kullanıcının verdiği kodda currentUserId null değilse !! ile kullanılmış,
-                // bu riskli olabilir. Güvenli olması için if (currentUserId != null) kontrolü daha iyi olurdu.
-                // Ancak kullanıcının isteği üzerine bu kısma dokunmuyorum.
-                if (currentUserId != null) { // Güvenlik için null kontrolü eklendi
+
+                if (currentUserId != null) {
                     postViewModel.toggleLikePost(postId, currentUserId)
                 } else {
                     Toast.makeText(requireContext(), "Lütfen giriş yapınız.", Toast.LENGTH_SHORT).show()
                 }
             },
-            // YENİ EKLENEN: Yorum butonuna tıklandığında çağrılacak lambda
             onCommentClicked = { postId ->
-                // CommentsDialogFragment'ı göster
                 try {
                     val commentsDialog = CommentsDialogFragment.newInstance(postId)
-                    // DialogFragment'ı bir Fragment içinden gösteriyorsanız childFragmentManager kullanmak daha uygundur.
-                    // Eğer UserActivity gibi bir Activity'den direkt gösterilmiyorsa.
                     commentsDialog.show(childFragmentManager, "CommentsDialogTag")
                 } catch (e: Exception) {
                     Log.e("HomeFragment", "CommentsDialogFragment gösterilemedi.", e)
@@ -152,10 +145,7 @@ class HomeFragment : Fragment() {
             allPosts = posts
             postAdapter.submitList(posts)
         }
-        // Yorum veya beğeni sonrası anlık hata mesajları için (isteğe bağlı)
-        // postViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-        //    error?.let { Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
-        // }
+
     }
 
     private fun loadInitialData() {
@@ -163,7 +153,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun filterPostsByTag(tag: String) {
-        // XML'de loadingOverlay ID'li bir View olmalı
         binding.loadingOverlay.visibility = View.VISIBLE
         binding.recyclerView.postDelayed({
             val filtered = if (tag == "Tümü") {

@@ -9,18 +9,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import com.altankoc.socialmedia.R
 import com.altankoc.socialmedia.beuverse.repository.UserRepository
 import com.altankoc.socialmedia.beuverse.util.Departments
-import com.altankoc.socialmedia.beuverse.view.login.VerificationActivity
-import com.altankoc.socialmedia.beuverse.view.user.UserActivity
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModel
 import com.altankoc.socialmedia.beuverse.viewmodel.UserViewModelFactory
-import com.altankoc.socialmedia.databinding.FragmentLoginBinding
 import com.altankoc.socialmedia.databinding.FragmentRegisterBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
 class RegisterFragment : Fragment() {
@@ -59,38 +52,45 @@ class RegisterFragment : Fragment() {
 
 
         binding.buttonKayit.setOnClickListener {
-            val email = binding.editTextEmail.text.toString()
+            val email = binding.editTextEmail.text.toString().trim()
             val password = binding.editTextPw.text.toString()
-            val username = binding.editTextUsername.text.toString()
-            val nickname = binding.editTextNickname.text.toString()
-            val department = binding.autoCompleteBolum.text.toString()
+            val username = binding.editTextUsername.text.toString().trim()
+            val nickname = binding.editTextNickname.text.toString().trim()
+            val department = binding.autoCompleteBolum.text.toString().trim()
+            val passwordConfirm = binding.editTextPwConfirm.text.toString().trim()
 
-
-            if (!email.endsWith("@mf.karaelmas.edu.tr")) {
-                Toast.makeText(requireContext(), "Sadece @mf.karaelmas.edu.tr uzantılı e-postalar kabul edilir", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty() || username.isEmpty() || nickname.isEmpty() || department.isEmpty()) {
+                Toast.makeText(requireContext(), "Lütfen tüm alanları doldurun!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            if (!email.endsWith("@mf.karaelmas.edu.tr")) {
+                Toast.makeText(requireContext(), "Sadece okul e-postası ile kayıt olabilirsiniz!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
+            if (password.length < 8) {
+                Toast.makeText(requireContext(), "Şifre en az 8 karakter olmalıdır!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password != passwordConfirm) {
+                Toast.makeText(requireContext(), "Şifreler eşleşmiyor!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             userViewModel.registerUser(email, password, username, nickname, department) { result ->
-
-               if(result == "Kayıt başarılı!"){
-                   binding.loadingOverlay.visibility = View.VISIBLE
+                if (result == "Kayıt başarılı!") {
+                    binding.loadingOverlay.visibility = View.VISIBLE
                     binding.root.postDelayed({
                         val intent = Intent(requireActivity(), VerificationActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
-                    },1000)
-
-               }
-                else{
-                   Toast.makeText(requireContext(),result, Toast.LENGTH_SHORT).show()
-               }
-
+                    }, 1000)
+                } else {
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                }
             }
-
-
         }
     }
 

@@ -5,14 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.altankoc.socialmedia.beuverse.model.Comment // Comment modelini import et
+import com.altankoc.socialmedia.beuverse.model.Comment
 import com.altankoc.socialmedia.beuverse.model.Post
 import com.altankoc.socialmedia.beuverse.repository.PostRepository
 import kotlinx.coroutines.launch
 
 class PostViewModel(private val repo: PostRepository) : ViewModel() {
 
-    // Mevcut LiveData'lar
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> = _posts
 
@@ -22,11 +21,9 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?> = _errorMessage
 
-    // YENİ EKLENEN LiveData: Seçili gönderinin yorumlarını tutmak için
     private val _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>> = _comments
 
-    // YENİ EKLENEN LiveData: Yorum ekleme işleminin durumunu bildirmek için (opsiyonel)
     private val _commentAddedStatus = MutableLiveData<Boolean?>()
     val commentAddedStatus: LiveData<Boolean?> = _commentAddedStatus
 
@@ -55,7 +52,7 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
                     repo.addPost(post)
                 }
                 if (success) {
-                    fetchPosts() // Yeni gönderi eklendikten sonra listeyi yenile
+                    fetchPosts()
                     _errorMessage.value = null
                 } else {
                     _errorMessage.value = "Paylaşım oluşturulamadı."
@@ -69,12 +66,12 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
     }
 
     fun toggleLikePost(postId: String, userId: String) {
-        // _isLoading.value = true // Anlık yükleme göstergesi için açılabilir
+
         viewModelScope.launch {
             try {
                 val success = repo.toggleLikePost(postId, userId)
                 if (success) {
-                    fetchPosts() // Beğeni sonrası ana gönderi listesini yenile
+                    fetchPosts()
                     _errorMessage.value = null
                 } else {
                     _errorMessage.value = "Beğeni işlemi başarısız oldu."
@@ -82,20 +79,19 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
             } catch (e: Exception) {
                 _errorMessage.value = "Beğeni hatası: ${e.message}"
             } finally {
-                // _isLoading.value = false // Eğer üstte açıldıysa
+
             }
         }
     }
 
-    // YENİ FONKSİYON: Bir gönderinin yorumlarını çekme
     fun fetchCommentsForPost(postId: String) {
-        _isLoading.value = true // Yorumlar yüklenirken genel yükleme durumu
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 _comments.value = repo.getCommentsForPost(postId)
                 _errorMessage.value = null
             } catch (e: Exception) {
-                _comments.value = emptyList() // Hata durumunda boş liste ata
+                _comments.value = emptyList()
                 _errorMessage.value = "Yorumlar yüklenemedi: ${e.message}"
             } finally {
                 _isLoading.value = false
@@ -103,19 +99,14 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
         }
     }
 
-    // YENİ FONKSİYON: Gönderiye yorum ekleme
     fun addCommentToPost(postId: String, comment: Comment) {
-        // _isLoading.value = true // Yorum eklenirken anlık yükleme durumu için
-        _commentAddedStatus.value = null // Önceki durumu sıfırla
+
+        _commentAddedStatus.value = null
         viewModelScope.launch {
             try {
                 val success = repo.addCommentToPost(postId, comment)
                 if (success) {
-                    // Yorum başarıyla eklendi, şimdi yorum listesini yenileyebiliriz
-                    fetchCommentsForPost(postId) // Yorumları yeniden çekerek listeyi güncelle
-                    // Ana gönderi listesindeki commentCount'ı da güncellemek için fetchPosts() çağrılabilir
-                    // veya sadece ilgili post'u güncelleyip _posts LiveData'sını tetikleyebiliriz.
-                    // Şimdilik fetchPosts() daha basit bir yaklaşım.
+                    fetchCommentsForPost(postId)
                     fetchPosts()
                     _errorMessage.value = null
                     _commentAddedStatus.value = true
@@ -127,12 +118,10 @@ class PostViewModel(private val repo: PostRepository) : ViewModel() {
                 _errorMessage.value = "Yorum ekleme hatası: ${e.message}"
                 _commentAddedStatus.value = false
             } finally {
-                // _isLoading.value = false // Eğer üstte açıldıysa
             }
         }
     }
 
-    // Yorum eklendi durumunu sıfırlamak için (opsiyonel)
     fun clearCommentAddedStatus() {
         _commentAddedStatus.value = null
     }
