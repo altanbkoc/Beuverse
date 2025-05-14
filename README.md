@@ -45,12 +45,5 @@
 - Glide (görsel yükleme ve önbellekleme)  
 - Material Design bileşenleri  
 
----
 
-## 🚀 Projenin Kurulumu
-
-1. Bu projeyi klonlayın:
-
-```bash
-git clone https://github.com/altanbkoc/beuverse.git
 
